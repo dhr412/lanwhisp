@@ -1,6 +1,6 @@
-# LanWhsip
+# LanWhisp
 
-**LanWhsip** is a lightweight, encrypted peer-to-peer chat application for local networks built entirely in Go using only the standard library. It enables secure and private communication between devices on the same LAN, ensuring message confidentiality even if the network is monitored. LanWhsip is designed for simplicity, portability, and end-to-end encryption without requiring internet access or any third-party dependencies.
+**LanWhisp** is a lightweight, encrypted peer-to-peer chat application for local networks built entirely in Go using only the standard library. It enables secure and private communication between devices on the same LAN, ensuring message confidentiality even if the network is monitored. LanWhisp is designed for simplicity, portability, and end-to-end encryption without requiring internet access or any third-party dependencies.
 
 ### Features
 
@@ -82,4 +82,3 @@ All messages are encrypted using the shared key and decrypted automatically on t
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-

@@ -12,14 +12,14 @@ type Config struct {
 	Passphrase string
 }
 
-func ParseCLI() Config {
+func ParseArgs() Config {
 	var name string
 	var port int
 	var passphrase string
 
 	flag.StringVar(&name, "name", "", "Your display name in the chat")
 	flag.IntVar(&port, "port", 9090, "Port to use for TCP chat server")
-	flag.StringVar(&passphrase, "passphrase", "", "Passphrase for encryption")
+	flag.StringVar(&passphrase, "passphrase", "", "Passphrase")
 
 	flag.Parse()
 

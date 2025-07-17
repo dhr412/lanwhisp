@@ -2,26 +2,27 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
 func main() {
-	name, port, passphrase := ParseArgs()
+	cfg := ParseArgs()
+	portStr := strconv.Itoa(cfg.Port)
 
-	salt := "lan-chat-static-salt"
+	salt := cfg.Name + portStr + cfg.Passphrase
+	key := DeriveKey(cfg.Passphrase, salt)
+	// if err != nil {
+	//	fmt.Println("Error deriving key:", err)
+	//	return
+	// }
 
-	key, err := DeriveKey(passphrase, salt)
-	if err != nil {
-		fmt.Println("Error deriving key:", err)
-		return
-	}
+	go StartServer(portStr, key, cfg.Name)
 
-	go StartServer(port, key, name)
-
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(512 * time.Millisecond)
 
 	fmt.Println("Encrypted LAN chat started.")
 	fmt.Println("Enter IP:PORT to send messages.")
 
-	InputLoop(key, name)
+	InputLoop(key, cfg.Name)
 }

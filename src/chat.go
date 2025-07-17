@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type BroadcastPayload struct {
+	Name string `json:"name"`
+	IP   string `json:"ip"`
+}
+
 func StartServer(port string, key []byte, name string) {
 	ln, err := net.Listen("tcp", ":"+port)
 	if err != nil {
@@ -43,7 +48,15 @@ func handleConnection(conn net.Conn, key []byte) {
 		return
 	}
 
-	fmt.Println("\n[Message Received] →", decrypted)
+	splitIndex := strings.Index(decrypted, ": ")
+	if splitIndex == -1 {
+		fmt.Println("\n[Message Received] →", decrypted)
+		return
+	}
+
+	meta := decrypted[:splitIndex]
+	msg := decrypted[splitIndex+2:]
+	fmt.Printf("\n%s: %s\n", meta, msg)
 }
 
 func SendMessage(targetIP string, targetPort string, message string, key []byte, senderName string) error {
@@ -53,7 +66,10 @@ func SendMessage(targetIP string, targetPort string, message string, key []byte,
 	}
 	defer conn.Close()
 
-	fullMessage := fmt.Sprintf("%s: %s", senderName, message)
+	localIP := GetLocalIP()
+	meta := fmt.Sprintf("%s@%s", senderName, localIP)
+	fullMessage := fmt.Sprintf("%s: %s", meta, message)
+
 	encrypted, err := Encrypt(fullMessage, key)
 	if err != nil {
 		return fmt.Errorf("encryption error: %w", err)
@@ -87,4 +103,14 @@ func InputLoop(key []byte, name string) {
 			fmt.Println("Error sending message:", err)
 		}
 	}
+}
+
+func GetLocalIP() string {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		return "unknown"
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP.String()
 }
